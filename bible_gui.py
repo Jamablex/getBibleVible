@@ -30,10 +30,10 @@ class JwfwClient:
     def __init__(self):
 
         # 加载文档数据
-        self.bible_data = Document("./data/bible.docx")
-        self.bible_travel_data = Document("./data/bible_travel_handle.docx")
-        self.filename = r'./data/dict.json'
-        self.fn = r'./data/result_dict.json'
+        self.bible_data = Document("../data/bible.docx")
+        self.bible_travel_data = Document("../data/bible_travel_handle.docx")
+        self.filename = r'../data/dict.json'
+        self.fn = r'../data/result_dict.json'
 
         # 验证章节是否有效的dict
         self.valid_dict = json.load(open(self.filename))
@@ -99,7 +99,7 @@ class JwfwClient:
 
 
         self.top = tkinter.Tk()
-
+        self.top.protocol('WM_DELETE_WINDOW', self.closeWindow)
         self.data_item = {}
         self.top.title("经文范围生成工具")
         self.top.geometry('600x480+600+200')
@@ -155,10 +155,13 @@ class JwfwClient:
         Label(self.top, text="叙述经文：", font=("楷体", 15)).place(x=70, y=180)
         self.xsjw = Text(self.top, width=35, height=5,font=("楷体",15))
         self.xsjw.place(x=170, y=180)
+        self.xsjw.bind("<Alt-q>",self.KeyPress)
         Label(self.top, text="读经进度：", font=("楷体", 15)).place(x=70, y=330)
         self.djjd_var = StringVar()
-        self.djjd = Entry(self.top, width=35, font=("楷体", 15),textvariable=self.djjd_var).place(x=170, y=330)
+        self.djjd = Entry(self.top, width=35, font=("楷体", 15),textvariable=self.djjd_var)
+        self.djjd.place(x=170, y=330)
         self.djjd_var.set("无")
+        self.djjd.bind("<Alt-w>", self.KeyPress1)
         self.button1 = Button(self.top, text="上一页", command=self.prev, font=("楷体", 15))
         self.button1.place(x=200, y=400)
         self.button2 = Button(self.top, text="下一页", command=self.next, font=("楷体", 15))
@@ -193,9 +196,210 @@ class JwfwClient:
         self.getDocx()
 
 
+    def KeyPress(self,event):
+        text = self.xsjw.get('0.0',END)
+        split_number = {
+            '创世记': '创世记', '出埃及记': '出埃及记', '利未记': '利未记', '民数记': '民数记', '申命记': '申命记', '约书亚记': '约书亚记', '士师记': '士师记',
+             '路得记': '路得记', '撒母耳记上': '撒母耳记上', '撒母耳记下': '撒母耳记下', '列王记上': '列王记上', '列王记下': '列王记下', '历代志上': '历代志上',
+             '历代志下': '历代志下', '以斯拉记': '以斯拉记', '尼希米记': '尼希米记', '以斯帖记': '以斯帖记', '约伯记': '约伯记', '诗篇': '诗篇', '箴言': '箴言',
+             '传道书': '传道书', '雅歌': '雅歌', '以赛亚书': '以赛亚书', '耶利米书': '耶利米书', '耶利米哀歌': '耶利米哀歌', '以西结书': '以西结书', '但以理书': '但以理书',
+             '何西阿书': '何西阿书', '约珥书': '约珥书', '阿摩司书': '阿摩司书', '俄巴底亚书': '俄巴底亚书', '约拿书': '约拿书', '弥迦书': '弥迦书', '那鸿书': '那鸿书',
+             '哈巴谷书': '哈巴谷书', '西番雅书': '西番雅书', '哈该书': '哈该书', '撒迦利亚书': '撒迦利亚书', '玛拉基书': '玛拉基书', '马太福音': '马太福音',
+             '马可福音': '马可福音', '路加福音': '路加福音', '约翰福音': '约翰福音', '使徒行传': '使徒行传', '罗马书': '罗马书', '哥林多前书': '哥林多前书',
+             '哥林多后书': '哥林多后书', '加拉太书': '加拉太书', '以弗所书': '以弗所书', '腓立比书': '腓立比书', '歌罗西书': '歌罗西书', '帖撒尼罗迦前书': '帖撒尼罗迦前书',
+             '帖撒尼罗迦后书': '帖撒尼罗迦后书', '提摩太前书': '提摩太前书', '提摩太后书': '提摩太后书', '提多书': '提多书', '腓利门书': '腓利门书', '希伯来书': '希伯来书',
+             '雅各书': '雅各书', '彼得前书': '彼得前书', '彼得后书': '彼得后书', '约翰一书': '约翰一书', '约翰二书': '约翰二书', '约翰三书': '约翰三书', '犹大书': '犹大书',
+             '启示录': '启示录',
+
+            '出埃及': '出埃及记', '利未': '利未记', '民数': '民数记', '申命': '申命记', '约书亚': '约书亚记', '士师': '士师记',
+            '路得': '路得记', '撒母耳上': '撒母耳记上', '撒母耳下': '撒母耳记下', '列王上': '列王记上', '列王下': '列王记下', '历代上': '历代志上',
+            '历代下': '历代志下', '以斯拉': '以斯拉记', '尼希米': '尼希米记', '以斯帖': '以斯帖记', '约伯': '约伯记',
+            '传道': '传道书', '以赛亚': '以赛亚书', '耶利米': '耶利米书', '以西结': '以西结书', '但以理': '但以理书',
+            '何西阿': '何西阿书', '约珥': '约珥书', '阿摩司': '阿摩司书', '俄巴底亚': '俄巴底亚书', '约拿': '约拿书', '弥迦': '弥迦书', '那鸿': '那鸿书',
+            '哈巴谷': '哈巴谷书', '西番雅': '西番雅书', '哈该': '哈该书', '撒迦利亚': '撒迦利亚书', '玛拉基': '玛拉基书',
+            '约翰': '约翰福音', '使徒': '使徒行传', '罗马': '罗马书', '哥林多前': '哥林多前书',
+            '哥林多后': '哥林多后书', '加拉太': '加拉太书', '以弗所': '以弗所书', '腓立比': '腓立比书', '歌罗西': '歌罗西书', '帖撒尼罗迦前': '帖撒尼罗迦前书',
+            '帖撒尼罗迦后': '帖撒尼罗迦后书', '提摩太前': '提摩太前书', '提摩太后': '提摩太后书', '提多': '提多书', '腓利门': '腓利门书', '希伯来': '希伯来书',
+            '雅各': '雅各书', '彼得前': '彼得前书', '彼得后': '彼得后书', '犹大': '犹大书',
 
 
+        '约一': '约翰一书', '约二': '约翰二书', '约三': '约翰三书','约壹': '约翰一书', '约贰': '约翰二书', '约叁': '约翰三书',
+                          '撒上': '撒母耳记上', '撒下': '撒母耳记下', '王上': '列王记上', '王下': '列王记下', '代上': '历代志上',
+                          '代下': '历代志下', '提后': '提摩太后书', '马可': '马可福音','路加': '路加福音', '马太': '马太福音', '可': '马可福音',
+                         '创': '创世记', '出': '出埃及记', '利': '利未记', '民': '民数记', '申': '申命记', '书': '约书亚记', '士': '士师记',
+                         '得': '路得记',  '拉': '以斯拉记', '尼': '尼希米记', '斯': '以斯帖记', '伯': '约伯记', '诗': '诗篇', '箴': '箴言',
+                         '传': '传道书', '歌': '雅歌', '赛': '以赛亚书', '耶': '耶利米书', '哀': '耶利米哀歌', '结': '以西结书', '但': '但以理书',
+                         '何': '何西阿书', '珥': '约珥书', '摩': '阿摩司书', '俄': '俄巴底亚书', '拿': '约拿书', '弥': '弥迦书', '鸿': '那鸿书',
+                         '哈': '哈巴谷书', '番': '西番雅书', '该': '哈该书', '亚': '撒迦利亚书', '玛': '玛拉基书', '太': '马太福音',
+                         '路': '路加福音', '约': '约翰福音', '徒': '使徒行传', '罗': '罗马书', '林前': '哥林多前书', '林后': '哥林多后书', '加': '加拉太书',
+                         '弗': '以弗所书', '腓': '腓立比书', '西': '歌罗西书', '帖前': '帖撒尼罗迦前书', '帖后': '帖撒尼罗迦后书', '提前': '提摩太前书',
+                         '多': '提多书', '门': '腓利门书', '来': '希伯来书', '雅': '雅各书', '彼前': '彼得前书', '彼后': '彼得后书',
+                         '犹': '犹大书', '启': '启示录',":":"章","至":"~","，":"节，",",":"节，",
+                            "一": "1", "二": "2", "三": "3", "四": "4", "五": "5", "六": "6", "七": "7", "八": "8", "九": "9", "壹": "1","-":"~",
+                            "十":"10","。":"节，"
+                        }
+        dict_num = {"一": "1", "二": "2", "三": "3", "四": "4", "五": "5", "六": "6", "七": "7", "八": "8", "九": "9", "壹": "1",
+                     "十":"10",     }
 
+        text1 = ""
+        while(True):
+            isHave = False
+            xlen = 1
+            for k in split_number:
+                split_str = text[:len(k)]
+                if split_str in split_number:
+                    xlen = len(split_str)
+                    isHave = True
+                    break
+
+
+            if(isHave is True):
+                if (text[:xlen] in (",","，")) and text1[-1] != '节' :
+                    text1 += split_number[text[:xlen]]
+                elif (text[:xlen] in (",","，")):
+                    text1 += text[:xlen]
+                elif text[:xlen] == "。" and xlen == len(text) - 1 and text1[-1] != '节':
+                    text1 += "节" + text[:xlen]
+                elif(text[:xlen]=="。" and xlen!=len(text)-1):
+                    text1 += split_number[text[:xlen]]
+                elif text[:xlen]=="。" and xlen==len(text)-1:
+                    text1 += text[:xlen]
+                elif text[:xlen] in dict_num and text[:xlen]!="十":
+                    if text[xlen:xlen+1]!='章' and (text[xlen:xlen+1] in split_number and split_number[text[xlen:xlen+1]].isdigit() ):
+                        text1 += split_number[text[:xlen]]
+                    else:
+                        text1 += split_number[text[:xlen]]+"章"
+                elif(text[:xlen]=="十"):
+                    if(text1[-1].isdigit() and (text[xlen:xlen+1] in split_number) and split_number[text[xlen:xlen+1]].isdigit()):
+                        text1 += ""
+                    elif text1[-1].isdigit() and text[xlen:xlen+1]!='章':
+                        text1 += "0章"
+                    elif text1[-1].isdigit() and text[xlen:xlen+1]=='章':
+                        text1 += "0"
+                    elif (text[xlen:xlen+1] in split_number) and split_number[text[xlen:xlen+1]].isdigit():
+                        text1 += "1"
+                    elif text[xlen:xlen+1]!='章':
+                        text1 += split_number[text[:xlen]]+"章"
+                    else:
+                        text1 += split_number[text[:xlen]]
+                else:
+                    text1 += split_number[text[:xlen]]
+                text = text[xlen:]
+
+            else:
+                text1 += text[:1]
+                text = text[1:]
+            if(len(text) <1):
+                break
+
+        self.xsjw.delete(0.0, END)
+        self.xsjw.insert(END, text1)
+
+
+    def KeyPress1(self,event):
+        text =self.djjd_var.get()
+        split_number = {
+            '创世记': '创世记', '出埃及记': '出埃及记', '利未记': '利未记', '民数记': '民数记', '申命记': '申命记', '约书亚记': '约书亚记', '士师记': '士师记',
+             '路得记': '路得记', '撒母耳记上': '撒母耳记上', '撒母耳记下': '撒母耳记下', '列王记上': '列王记上', '列王记下': '列王记下', '历代志上': '历代志上',
+             '历代志下': '历代志下', '以斯拉记': '以斯拉记', '尼希米记': '尼希米记', '以斯帖记': '以斯帖记', '约伯记': '约伯记', '诗篇': '诗篇', '箴言': '箴言',
+             '传道书': '传道书', '雅歌': '雅歌', '以赛亚书': '以赛亚书', '耶利米书': '耶利米书', '耶利米哀歌': '耶利米哀歌', '以西结书': '以西结书', '但以理书': '但以理书',
+             '何西阿书': '何西阿书', '约珥书': '约珥书', '阿摩司书': '阿摩司书', '俄巴底亚书': '俄巴底亚书', '约拿书': '约拿书', '弥迦书': '弥迦书', '那鸿书': '那鸿书',
+             '哈巴谷书': '哈巴谷书', '西番雅书': '西番雅书', '哈该书': '哈该书', '撒迦利亚书': '撒迦利亚书', '玛拉基书': '玛拉基书', '马太福音': '马太福音',
+             '马可福音': '马可福音', '路加福音': '路加福音', '约翰福音': '约翰福音', '使徒行传': '使徒行传', '罗马书': '罗马书', '哥林多前书': '哥林多前书',
+             '哥林多后书': '哥林多后书', '加拉太书': '加拉太书', '以弗所书': '以弗所书', '腓立比书': '腓立比书', '歌罗西书': '歌罗西书', '帖撒尼罗迦前书': '帖撒尼罗迦前书',
+             '帖撒尼罗迦后书': '帖撒尼罗迦后书', '提摩太前书': '提摩太前书', '提摩太后书': '提摩太后书', '提多书': '提多书', '腓利门书': '腓利门书', '希伯来书': '希伯来书',
+             '雅各书': '雅各书', '彼得前书': '彼得前书', '彼得后书': '彼得后书', '约翰一书': '约翰一书', '约翰二书': '约翰二书', '约翰三书': '约翰三书', '犹大书': '犹大书',
+             '启示录': '启示录',
+
+            '出埃及': '出埃及记', '利未': '利未记', '民数': '民数记', '申命': '申命记', '约书亚': '约书亚记', '士师': '士师记',
+            '路得': '路得记', '撒母耳上': '撒母耳记上', '撒母耳下': '撒母耳记下', '列王上': '列王记上', '列王下': '列王记下', '历代上': '历代志上',
+            '历代下': '历代志下', '以斯拉': '以斯拉记', '尼希米': '尼希米记', '以斯帖': '以斯帖记', '约伯': '约伯记',
+            '传道': '传道书', '以赛亚': '以赛亚书', '耶利米': '耶利米书', '以西结': '以西结书', '但以理': '但以理书',
+            '何西阿': '何西阿书', '约珥': '约珥书', '阿摩司': '阿摩司书', '俄巴底亚': '俄巴底亚书', '约拿': '约拿书', '弥迦': '弥迦书', '那鸿': '那鸿书',
+            '哈巴谷': '哈巴谷书', '西番雅': '西番雅书', '哈该': '哈该书', '撒迦利亚': '撒迦利亚书', '玛拉基': '玛拉基书',
+            '约翰': '约翰福音', '使徒': '使徒行传', '罗马': '罗马书', '哥林多前': '哥林多前书',
+            '哥林多后': '哥林多后书', '加拉太': '加拉太书', '以弗所': '以弗所书', '腓立比': '腓立比书', '歌罗西': '歌罗西书', '帖撒尼罗迦前': '帖撒尼罗迦前书',
+            '帖撒尼罗迦后': '帖撒尼罗迦后书', '提摩太前': '提摩太前书', '提摩太后': '提摩太后书', '提多': '提多书', '腓利门': '腓利门书', '希伯来': '希伯来书',
+            '雅各': '雅各书', '彼得前': '彼得前书', '彼得后': '彼得后书', '犹大': '犹大书',
+
+
+        '约一': '约翰一书', '约二': '约翰二书', '约三': '约翰三书','约壹': '约翰一书', '约贰': '约翰二书', '约叁': '约翰三书',
+                          '撒上': '撒母耳记上', '撒下': '撒母耳记下', '王上': '列王记上', '王下': '列王记下', '代上': '历代志上',
+                          '代下': '历代志下', '提后': '提摩太后书', '马可': '马可福音','路加': '路加福音', '马太': '马太福音', '可': '马可福音',
+                         '创': '创世记', '出': '出埃及记', '利': '利未记', '民': '民数记', '申': '申命记', '书': '约书亚记', '士': '士师记',
+                         '得': '路得记',  '拉': '以斯拉记', '尼': '尼希米记', '斯': '以斯帖记', '伯': '约伯记', '诗': '诗篇', '箴': '箴言',
+                         '传': '传道书', '歌': '雅歌', '赛': '以赛亚书', '耶': '耶利米书', '哀': '耶利米哀歌', '结': '以西结书', '但': '但以理书',
+                         '何': '何西阿书', '珥': '约珥书', '摩': '阿摩司书', '俄': '俄巴底亚书', '拿': '约拿书', '弥': '弥迦书', '鸿': '那鸿书',
+                         '哈': '哈巴谷书', '番': '西番雅书', '该': '哈该书', '亚': '撒迦利亚书', '玛': '玛拉基书', '太': '马太福音',
+                         '路': '路加福音', '约': '约翰福音', '徒': '使徒行传', '罗': '罗马书', '林前': '哥林多前书', '林后': '哥林多后书', '加': '加拉太书',
+                         '弗': '以弗所书', '腓': '腓立比书', '西': '歌罗西书', '帖前': '帖撒尼罗迦前书', '帖后': '帖撒尼罗迦后书', '提前': '提摩太前书',
+                         '多': '提多书', '门': '腓利门书', '来': '希伯来书', '雅': '雅各书', '彼前': '彼得前书', '彼后': '彼得后书',
+                         '犹': '犹大书', '启': '启示录',":":"章","至":"~","，":"节，",",":"节，",
+                            "一": "1", "二": "2", "三": "3", "四": "4", "五": "5", "六": "6", "七": "7", "八": "8", "九": "9", "壹": "1","-":"~",
+                            "十":"10","。":"节，"
+                        }
+        dict_num = {"一": "1", "二": "2", "三": "3", "四": "4", "五": "5", "六": "6", "七": "7", "八": "8", "九": "9", "壹": "1",
+                     "十":"10",     }
+
+        text1 = ""
+        while(True):
+            isHave = False
+            xlen = 1
+            for k in split_number:
+                split_str = text[:len(k)]
+                if split_str in split_number:
+                    xlen = len(split_str)
+                    isHave = True
+                    break
+
+
+            if(isHave is True):
+                if (text[:xlen] in (",","，")) and text1[-1] != '节' :
+                    text1 += split_number[text[:xlen]]
+                elif (text[:xlen] in (",","，")):
+                    text1 += text[:xlen]
+                elif text[:xlen] == "。" and xlen == len(text) - 1 and text1[-1] != '节':
+                    text1 += "节" + text[:xlen]
+                elif(text[:xlen]=="。" and xlen!=len(text)-1):
+                    text1 += split_number[text[:xlen]]
+                elif text[:xlen]=="。" and xlen==len(text)-1:
+                    text1 += text[:xlen]
+                elif text[:xlen] in dict_num and text[:xlen]!="十":
+                    if text[xlen:xlen+1]!='章' and (text[xlen:xlen+1] in split_number and split_number[text[xlen:xlen+1]].isdigit() ):
+                        text1 += split_number[text[:xlen]]
+                    else:
+                        text1 += split_number[text[:xlen]]+"章"
+                elif(text[:xlen]=="十"):
+                    if(text1[-1].isdigit() and (text[xlen:xlen+1] in split_number) and split_number[text[xlen:xlen+1]].isdigit()):
+                        text1 += ""
+                    elif text1[-1].isdigit() and text[xlen:xlen+1]!='章':
+                        text1 += "0章"
+                    elif text1[-1].isdigit() and text[xlen:xlen+1]=='章':
+                        text1 += "0"
+                    elif (text[xlen:xlen+1] in split_number) and split_number[text[xlen:xlen+1]].isdigit():
+                        text1 += "1"
+                    elif text[xlen:xlen+1]!='章':
+                        text1 += split_number[text[:xlen]]+"章"
+                    else:
+                        text1 += split_number[text[:xlen]]
+                else:
+                    text1 += split_number[text[:xlen]]
+                text = text[xlen:]
+
+            else:
+                text1 += text[:1]
+                text = text[1:]
+            if(len(text) <1):
+                break
+
+        self.djjd_var.set(text1)
+
+    def closeWindow(self):
+        ans = tkinter.messagebox.askyesno(title='关闭程序',message='确定要关闭程序吗?')
+        if(ans):
+            sys.exit()
+        else:
+            return
 
     # 验证是否有效
     def valid(self,bible_volume_name, bible_verse_node_str, crt_volume, crt_verse):
@@ -313,27 +517,32 @@ class JwfwClient:
                 else:
                     before = scope
                     after = scope
-                bible_is_valid, new_crt_volume, new_crt_verse = self.valid(self.dealScope(before)[0], self.dealScope(before)[1],
-                                                                      crt_volume, crt_verse)
-                crt_volume = new_crt_volume
-                crt_verse = new_crt_verse
-                if bible_is_valid is False:
-                    is_valid = False
-                    break
-                if bible_is_valid == "2":
-                    is_valid = "1"
-                    break
-                bible_is_valid, new_crt_volume1, new_crt_verse1 = self.valid(self.dealScope(after)[0], self.dealScope(after)[1],
-                                                                        crt_volume, crt_verse)
-                crt_volume = new_crt_volume1
-                crt_verse = new_crt_verse1
-                if bible_is_valid is False:
-                    is_valid = False
-                    break
+                try:
+                    bible_is_valid, new_crt_volume, new_crt_verse = self.valid(self.dealScope(before)[0], self.dealScope(before)[1],
+                                                                          crt_volume, crt_verse)
+                    crt_volume = new_crt_volume
+                    crt_verse = new_crt_verse
+                    if bible_is_valid is False:
+                        is_valid = False
+                        break
+                    if bible_is_valid == "2":
+                        is_valid = "1"
+                        break
 
-                if bible_is_valid == "2":
-                    is_valid = "1"
-                    break
+                    bible_is_valid, new_crt_volume1, new_crt_verse1 = self.valid(self.dealScope(after)[0], self.dealScope(after)[1],
+                                                                            crt_volume, crt_verse)
+                    crt_volume = new_crt_volume1
+                    crt_verse = new_crt_verse1
+                    if bible_is_valid is False:
+                        is_valid = False
+                        break
+
+                    if bible_is_valid == "2":
+                        is_valid = "1"
+                        break
+                except:
+                    is_valid = False
+
         else:
             is_valid = "0"
         return is_valid
@@ -815,8 +1024,24 @@ class JwfwClient:
     def saveFile(self):
         docname = self.docname.get(0.0,END).strip()
         self.document.save(docname+".docx")
-        self.docTk.quit()
-        self.docTk.destroy()
+        self.docTk.withdraw()
+        tkinter.messagebox.showinfo("保存文件", "保存成功!")
+        for item in self.data_item:
+            self.data_item[item]['叙述经文'] = ""
+            self.data_item[item]['读经进度'] = "无"
+        self.xsjw.delete(0.0, END)
+        self.djjd_var.set("无")
+        self.wdscjd.place(x=70, y=30)
+        self.saveFileDay.place(x=20, y=108)
+        self.canvas.place(x=75, y=100)
+        self.zxjd.place(x=240, y=106)
+        self.file_label.place_forget()
+        self.docname.place_forget()
+        self.save_button.place_forget()
+        self.document = Document()
+        self.document.styles['Normal'].font.name = 'Times New Roman'
+        self.document.styles['Normal']._element.rPr.rFonts.set(qn('w:eastAsia'), u'宋体')
+        # self.docTk.destroy()
 
 
 
@@ -868,7 +1093,7 @@ class JwfwClient:
                 self.kcnr_var.set("")
             self.xsjw.delete(0.0, END)
             self.djjd_var.set("无")
-
+        self.xsjw.focus()
         if(current_day=="周一"):
             self.button1.place_forget()
             self.button2.place(x=360, y=400)
