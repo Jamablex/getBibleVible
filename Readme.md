@@ -30,9 +30,19 @@
 等类似格式
 
 
-
-
-
-
-
-==========================================
+打包界面化文件
+1，安装pyinstaller
+    pip install pyinstaller (如果安装失败，用管理员权限安装)
+    
+2，打包程序
+    （1）Win+R，cmd进入管理员界面 cd切换到代码主目录(bible文件下)
+    （2）输入命令pyinstaller -F -w -i ../data/bible.ico bible_gui.py
+        -F 表示打包(F 大写)
+        -w 取消控制台显示(w 小写)
+        -i 有错误也继续执行(i 小写)
+        ico图片路径（绝对路径）
+        最后是代码名称
+    （3）如果程序里面有图片，需要将图片复制到exe文件同一级文件夹，否则程序无法正常运行
+   
+打包终端程序
+    pyinstaller -F -i ../data/bible.ico bible_handle.py
